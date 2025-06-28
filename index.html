@@ -47,84 +47,475 @@
   </script>
 
   <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
     body {
-      font-family: system-ui, sans-serif;
-      max-width: 700px;
-      margin: 2rem auto;
-      padding: 0 1rem;
+      font-family: 'SF Mono', 'Monaco', 'Cascadia Code', 'Roboto Mono', Consolas, 'Courier New', monospace;
+      background: linear-gradient(135deg, #0a0a0a 0%, #1a1a2e 50%, #16213e 100%);
+      color: #e8e8e8;
       line-height: 1.6;
+      min-height: 100vh;
+      overflow-x: hidden;
     }
-    code {
-      background: #f3f3f3;
-      padding: 2px 4px;
-      border-radius: 4px;
+
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 2rem;
     }
+
+    /* Animated background particles */
+    .bg-particles {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      z-index: -1;
+    }
+
+    .particle {
+      position: absolute;
+      width: 2px;
+      height: 2px;
+      background: #00ff88;
+      border-radius: 50%;
+      animation: float 6s infinite ease-in-out;
+      opacity: 0.3;
+    }
+
+    @keyframes float {
+      0%, 100% { transform: translateY(0px) rotate(0deg); opacity: 0.3; }
+      50% { transform: translateY(-20px) rotate(180deg); opacity: 0.8; }
+    }
+
+    /* Header */
+    header {
+      padding: 2rem 0;
+      text-align: center;
+      position: relative;
+    }
+
+    .logo {
+      font-size: clamp(2.5rem, 5vw, 4rem);
+      font-weight: 900;
+      background: linear-gradient(45deg, #00ff88, #00d4ff, #ff0080);
+      background-size: 300% 300%;
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      animation: gradient-shift 3s ease-in-out infinite;
+      margin-bottom: 1rem;
+      letter-spacing: -2px;
+    }
+
+    @keyframes gradient-shift {
+      0%, 100% { background-position: 0% 50%; }
+      50% { background-position: 100% 50%; }
+    }
+
+    .tagline {
+      font-size: 1.2rem;
+      color: #a0a0a0;
+      max-width: 600px;
+      margin: 0 auto 3rem;
+    }
+
+    /* Hero section */
+    .hero {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 4rem;
+      align-items: center;
+      margin: 4rem 0;
+    }
+
+    .hero-content h1 {
+      font-size: clamp(2rem, 4vw, 3.5rem);
+      margin-bottom: 1.5rem;
+      font-weight: 800;
+      line-height: 1.2;
+    }
+
+    .hero-content p {
+      font-size: 1.1rem;
+      color: #b0b0b0;
+      margin-bottom: 2rem;
+    }
+
+    .cta-button {
+      display: inline-block;
+      background: linear-gradient(45deg, #00ff88, #00d4ff);
+      color: #000;
+      padding: 1rem 2rem;
+      text-decoration: none;
+      border-radius: 50px;
+      font-weight: 700;
+      font-size: 1.1rem;
+      transition: all 0.3s ease;
+      box-shadow: 0 8px 25px rgba(0, 255, 136, 0.3);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .cta-button:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 12px 35px rgba(0, 255, 136, 0.4);
+    }
+
+    .cta-button::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+      transition: left 0.5s;
+    }
+
+    .cta-button:hover::before {
+      left: 100%;
+    }
+
+    /* Code demo */
+    .code-demo {
+      background: rgba(0, 0, 0, 0.4);
+      border-radius: 15px;
+      padding: 2rem;
+      border: 1px solid rgba(0, 255, 136, 0.2);
+      backdrop-filter: blur(10px);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .code-demo::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 2px;
+      background: linear-gradient(90deg, #00ff88, #00d4ff, #ff0080, #00ff88);
+      background-size: 200% 100%;
+      animation: border-flow 3s linear infinite;
+    }
+
+    @keyframes border-flow {
+      0% { background-position: 0% 0%; }
+      100% { background-position: 200% 0%; }
+    }
+
+    .code-header {
+      display: flex;
+      align-items: center;
+      margin-bottom: 1rem;
+      font-size: 0.9rem;
+      color: #888;
+    }
+
+    .code-dots {
+      display: flex;
+      gap: 6px;
+      margin-right: 1rem;
+    }
+
+    .code-dots span {
+      width: 12px;
+      height: 12px;
+      border-radius: 50%;
+      display: block;
+    }
+
+    .code-dots .red { background: #ff5f56; }
+    .code-dots .yellow { background: #ffbd2e; }
+    .code-dots .green { background: #27ca3f; }
+
     pre {
-      background: #f3f3f3;
-      padding: 1rem;
-      border-radius: 6px;
+      background: transparent;
+      margin: 0;
+      font-family: inherit;
+      font-size: 0.95rem;
+      line-height: 1.5;
       overflow-x: auto;
     }
-    h1, h2 {
-      margin-top: 2rem;
+
+    .code-line {
+      display: block;
+      padding: 2px 0;
     }
-    a {
-      color: #0059ff;
-      text-decoration: none;
+
+    .keyword { color: #ff79c6; }
+    .string { color: #f1fa8c; }
+    .comment { color: #6272a4; }
+    .function { color: #50fa7b; }
+    .variable { color: #8be9fd; }
+
+    /* Features section */
+    .features {
+      margin: 6rem 0;
     }
-    a:hover {
-      text-decoration: underline;
+
+    .features h2 {
+      text-align: center;
+      font-size: 2.5rem;
+      margin-bottom: 3rem;
+      color: #fff;
     }
+
+    .features-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 2rem;
+    }
+
+    .feature-card {
+      background: rgba(255, 255, 255, 0.05);
+      border-radius: 15px;
+      padding: 2rem;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      backdrop-filter: blur(10px);
+      transition: all 0.3s ease;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .feature-card:hover {
+      transform: translateY(-5px);
+      border-color: rgba(0, 255, 136, 0.3);
+      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+    }
+
+    .feature-card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 2px;
+      background: linear-gradient(90deg, #00ff88, #00d4ff);
+      transform: scaleX(0);
+      transition: transform 0.3s ease;
+    }
+
+    .feature-card:hover::before {
+      transform: scaleX(1);
+    }
+
+    .feature-icon {
+      font-size: 2.5rem;
+      margin-bottom: 1rem;
+      display: block;
+    }
+
+    .feature-card h3 {
+      font-size: 1.3rem;
+      margin-bottom: 1rem;
+      color: #fff;
+    }
+
+    .feature-card p {
+      color: #b0b0b0;
+      line-height: 1.6;
+    }
+
+    /* Pricing section */
+    .pricing {
+      text-align: center;
+      margin: 6rem 0;
+      padding: 4rem 2rem;
+      background: rgba(0, 0, 0, 0.3);
+      border-radius: 20px;
+      border: 1px solid rgba(0, 255, 136, 0.2);
+    }
+
+    .pricing h2 {
+      font-size: 2.5rem;
+      margin-bottom: 1rem;
+    }
+
+    .price {
+      font-size: 4rem;
+      font-weight: 900;
+      background: linear-gradient(45deg, #00ff88, #00d4ff);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      margin: 1rem 0;
+    }
+
+    .price-details {
+      font-size: 1.1rem;
+      color: #b0b0b0;
+      margin-bottom: 2rem;
+    }
+
+    /* Footer */
     footer {
-      margin-top: 3rem;
-      font-size: 0.9rem;
+      margin-top: 4rem;
+      padding: 2rem 0;
+      text-align: center;
       color: #666;
+      border-top: 1px solid rgba(255, 255, 255, 0.1);
     }
+
+    /* Responsive */
+    @media (max-width: 768px) {
+      .hero {
+        grid-template-columns: 1fr;
+        gap: 2rem;
+        text-align: center;
+      }
+      
+      .container {
+        padding: 0 1rem;
+      }
+    }
+
+    /* Animation delays for particles */
+    .particle:nth-child(2) { animation-delay: -1s; }
+    .particle:nth-child(3) { animation-delay: -2s; }
+    .particle:nth-child(4) { animation-delay: -3s; }
+    .particle:nth-child(5) { animation-delay: -4s; }
+    .particle:nth-child(6) { animation-delay: -5s; }
   </style>
 </head>
 <body>
-  <h1>🔑 MontgomeryNX Proxy</h1>
-  <p>
-    A clean, drop-in proxy endpoint with IP rotation, smart retries, and caching. 
-    No SDKs, no infrastructure, no scraping drama.
-  </p>
+  <!-- Animated background -->
+  <div class="bg-particles">
+    <div class="particle" style="left: 10%; top: 20%;"></div>
+    <div class="particle" style="left: 20%; top: 80%;"></div>
+    <div class="particle" style="left: 60%; top: 30%;"></div>
+    <div class="particle" style="left: 80%; top: 70%;"></div>
+    <div class="particle" style="left: 40%; top: 60%;"></div>
+    <div class="particle" style="left: 90%; top: 10%;"></div>
+  </div>
 
-  <h2>How It Works</h2>
-  <p>
-    Replace your API calls with our smart endpoint:
-  </p>
-  <pre><code>import requests
+  <div class="container">
+    <header>
+      <div class="logo">🔑 MontgomeryNX</div>
+      <p class="tagline">The scraping proxy that actually works. No drama, no setup, just results.</p>
+    </header>
 
-url = "https://example.com/page"
-proxied = f"https://proxy.montgomerynx.com/your_api_key/{url}"
-r = requests.get(proxied)
-print(r.text)</code></pre>
+    <section class="hero">
+      <div class="hero-content">
+        <h1>Stop fighting with scrapers.<br>Start shipping.</h1>
+        <p>Drop-in proxy with IP rotation, smart retries, and caching. One line of code. Zero infrastructure headaches.</p>
+        <a href="https://therealbct.gumroad.com/l/bsfreescraping" target="_blank" class="cta-button">Get API Key - $30/mo</a>
+      </div>
+      
+      <div class="code-demo">
+        <div class="code-header">
+          <div class="code-dots">
+            <span class="red"></span>
+            <span class="yellow"></span>
+            <span class="green"></span>
+          </div>
+          scraper.py
+        </div>
+        <pre><code><span class="code-line"><span class="keyword">import</span> <span class="variable">requests</span></span>
+<span class="code-line"></span>
+<span class="code-line"><span class="comment"># Before: Blocked, rate-limited, frustrated</span></span>
+<span class="code-line"><span class="variable">url</span> = <span class="string">"https://example.com/api/data"</span></span>
+<span class="code-line"></span>
+<span class="code-line"><span class="comment"># After: Just works™</span></span>
+<span class="code-line"><span class="variable">proxied</span> = <span class="string">f"https://proxy.montgomerynx.com/{api_key}/{url}"</span></span>
+<span class="code-line"><span class="variable">r</span> = <span class="variable">requests</span>.<span class="function">get</span>(<span class="variable">proxied</span>)</span>
+<span class="code-line"><span class="function">print</span>(<span class="variable">r</span>.<span class="variable">text</span>)  <span class="comment"># 🎉 Success!</span></span></code></pre>
+      </div>
+    </section>
 
-  <p>That's it. Works with Python, curl, JS, PHP, even Google Sheets.</p>
+    <section class="features">
+      <h2>Built for Developer Sanity</h2>
+      <div class="features-grid">
+        <div class="feature-card">
+          <span class="feature-icon">⚡</span>
+          <h3>Zero Setup</h3>
+          <p>No SDKs, no configuration files, no Docker containers. Just change your URL and you're done. Works with any HTTP client.</p>
+        </div>
+        
+        <div class="feature-card">
+          <span class="feature-icon">🔄</span>
+          <h3>Smart Retries</h3>
+          <p>Exponential backoff, circuit breakers, and intelligent retry logic. We handle the flaky websites so you don't have to.</p>
+        </div>
+        
+        <div class="feature-card">
+          <span class="feature-icon">🎭</span>
+          <h3>IP & UA Rotation</h3>
+          <p>Automatic IP switching and real browser user-agents. Look like legitimate traffic, not a bot army.</p>
+        </div>
+        
+        <div class="feature-card">
+          <span class="feature-icon">🌐</span>
+          <h3>Works Everywhere</h3>
+          <p>Python, Node.js, curl, PHP, Go, even Google Sheets. If it speaks HTTP, it works with MontgomeryNX.</p>
+        </div>
+        
+        <div class="feature-card">
+          <span class="feature-icon">🚀</span>
+          <h3>Built for Scale</h3>
+          <p>Handle thousands of requests without breaking a sweat. Intelligent caching and load balancing included.</p>
+        </div>
+        
+        <div class="feature-card">
+          <span class="feature-icon">🛡️</span>
+          <h3>Tor Support</h3>
+          <p>Need maximum anonymity? Route through Tor with a single parameter. Privacy-first scraping made simple.</p>
+        </div>
+      </div>
+    </section>
 
-  <h2>Ease of Use</h2>
-  <ul>
-    <li>⚡ <strong>Zero setup</strong>: Just plug and run</li>
-    <li>🔁 <strong>Auto-retry & backoff</strong>: Survives flaky sites</li>
-    <li>🧠 <strong>IP & User-Agent rotation</strong>: Simulates real users</li>
-    <li>🧱 <strong>Works anywhere</strong>: curl, Python, JS, etc.</li>
-  </ul>
-
-  <h2>API Keys</h2>
-  <p>
-    10,000 calls · 10 GiB bandwidth · Tor support<br>
-    $30/month — Cancel anytime
-  </p>
-  <p>
-    👉 <a href="https://therealbct.gumroad.com/l/bsfreescraping" target="_blank"><strong>Get your API Key here</strong></a>
-  </p>
+    <section class="pricing">
+      <h2>Simple Pricing</h2>
+      <div class="price">$30</div>
+      <div class="price-details">
+        10,000 API calls • 10 GB bandwidth • Tor support<br>
+        Cancel anytime, no long-term contracts
+      </div>
+      <a href="https://therealbct.gumroad.com/l/bsfreescraping" target="_blank" class="cta-button">Start Scraping Now</a>
+    </section>
+  </div>
 
   <footer>
-    <p>
-      This service is intended for lawful access to publicly available data only. 
-      Use on login-required, private, or terms-violating sites is not allowed. We may suspend keys that abuse the service.
-    </p>
-    <p>© 2025 MontgomeryNX</p>
+    <div class="container">
+      <p>This service is intended for lawful access to publicly available data only. Use on login-required, private, or terms-violating sites is not allowed.</p>
+      <p>© 2025 MontgomeryNX</p>
+    </div>
   </footer>
+
+  <script>
+    // Add some interactive particles
+    function createParticle() {
+      const particle = document.createElement('div');
+      particle.className = 'particle';
+      particle.style.left = Math.random() * 100 + '%';
+      particle.style.top = Math.random() * 100 + '%';
+      particle.style.animationDuration = (Math.random() * 3 + 3) + 's';
+      document.querySelector('.bg-particles').appendChild(particle);
+      
+      setTimeout(() => {
+        particle.remove();
+      }, 6000);
+    }
+
+    // Create particles periodically
+    setInterval(createParticle, 2000);
+
+    // Add smooth scrolling for any internal links
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+      anchor.addEventListener('click', function (e) {
+        e.preventDefault();
+        document.querySelector(this.getAttribute('href')).scrollIntoView({
+          behavior: 'smooth'
+        });
+      });
+    });
+  </script>
 </body>
 </html>
