@@ -571,6 +571,31 @@
         });
       });
     });
-  </script>
+
+
+  // Reddit tracking via dataLayer for CTA click
+  document.addEventListener("DOMContentLoaded", function () {
+    const button = document.querySelector(".cta-button");
+    if (button) {
+      button.addEventListener("click", function () {
+        window.dataLayer = window.dataLayer || [];
+        window.dataLayer.push({
+          event: "GetAPIKeyClick",
+          conversionId: "a2_h8xkld936vku",
+          itemCount: 1,
+          currency: "USD",
+          transactionValue: 30,
+          productRows: [{
+            id: "plan-30-month",
+            category: "Subscription",
+            name: "MontgomeryNX Proxy"
+          }]
+        });
+      });
+    }
+  });
+</script>
+  
+  
 </body>
 </html>
