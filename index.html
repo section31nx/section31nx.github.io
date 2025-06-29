@@ -80,6 +80,132 @@
       padding: 0 2rem;
     }
 
+    /* Promo Popup Styles */
+    .promo-popup {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      background: linear-gradient(135deg, #ff0080, #ff4500, #ff6b35);
+      color: white;
+      padding: 1rem 2rem;
+      z-index: 1000;
+      box-shadow: 0 4px 20px rgba(255, 0, 128, 0.4);
+      transform: translateY(-100%);
+      transition: transform 0.5s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+      border-bottom: 3px solid rgba(255, 255, 255, 0.3);
+    }
+
+    .promo-popup.show {
+      transform: translateY(0);
+    }
+
+    .promo-content {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      max-width: 1200px;
+      margin: 0 auto;
+      flex-wrap: wrap;
+      gap: 1rem;
+    }
+
+    .promo-text {
+      flex: 1;
+      min-width: 300px;
+    }
+
+    .promo-title {
+      font-size: 1.2rem;
+      font-weight: 800;
+      margin-bottom: 0.2rem;
+      text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+    }
+
+    .promo-subtitle {
+      font-size: 0.95rem;
+      opacity: 0.9;
+      font-weight: 500;
+    }
+
+    .promo-code {
+      background: rgba(255, 255, 255, 0.2);
+      padding: 0.3rem 0.8rem;
+      border-radius: 25px;
+      font-family: 'SF Mono', monospace;
+      font-weight: 700;
+      border: 2px solid rgba(255, 255, 255, 0.3);
+      backdrop-filter: blur(10px);
+      display: inline-block;
+      margin: 0 0.5rem;
+      animation: pulse-glow 2s infinite ease-in-out;
+    }
+
+    @keyframes pulse-glow {
+      0%, 100% { 
+        transform: scale(1); 
+        box-shadow: 0 0 10px rgba(255, 255, 255, 0.3);
+      }
+      50% { 
+        transform: scale(1.05); 
+        box-shadow: 0 0 20px rgba(255, 255, 255, 0.6);
+      }
+    }
+
+    .promo-actions {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+    }
+
+    .promo-cta {
+      background: rgba(255, 255, 255, 0.9);
+      color: #ff0080;
+      padding: 0.8rem 1.5rem;
+      text-decoration: none;
+      border-radius: 30px;
+      font-weight: 700;
+      font-size: 0.95rem;
+      transition: all 0.3s ease;
+      border: 2px solid transparent;
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+      backdrop-filter: blur(10px);
+    }
+
+    .promo-cta:hover {
+      background: white;
+      transform: translateY(-2px);
+      box-shadow: 0 6px 25px rgba(0, 0, 0, 0.3);
+    }
+
+    .close-btn {
+      background: none;
+      border: none;
+      color: white;
+      font-size: 1.5rem;
+      cursor: pointer;
+      padding: 0.5rem;
+      border-radius: 50%;
+      width: 40px;
+      height: 40px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.3s ease;
+      opacity: 0.7;
+    }
+
+    .close-btn:hover {
+      background: rgba(255, 255, 255, 0.2);
+      opacity: 1;
+      transform: rotate(90deg);
+    }
+
+    /* Adjust body padding when promo is visible */
+    body.promo-active {
+      padding-top: 80px;
+    }
+
     /* Animated background particles */
     .bg-particles {
       position: fixed;
@@ -388,6 +514,19 @@
       .container {
         padding: 0 1rem;
       }
+
+      .promo-content {
+        flex-direction: column;
+        text-align: center;
+      }
+
+      .promo-text {
+        min-width: auto;
+      }
+
+      body.promo-active {
+        padding-top: 120px;
+      }
     }
 
     /* Animation delays for particles */
@@ -404,6 +543,20 @@
   height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
   <!-- End Google Tag Manager (noscript) -->
   
+  <!-- Promo Popup -->
+  <div class="promo-popup" id="promoPopup">
+    <div class="promo-content">
+      <div class="promo-text">
+        <div class="promo-title">🚀 Be part of the first! Limited time product launch offer</div>
+        <div class="promo-subtitle">Get MontgomeryNX for just <strong>$5</strong> instead of $30 with code <span class="promo-code">ROTATE5</span></div>
+      </div>
+      <div class="promo-actions">
+        <a href="https://therealbct.gumroad.com/l/bsfreescraping" target="_blank" class="promo-cta">Claim $5 Offer</a>
+        <button class="close-btn" onclick="closePromo()">×</button>
+      </div>
+    </div>
+  </div>
+
   <!-- Animated background -->
   <div class="bg-particles">
     <div class="particle" style="left: 10%; top: 20%;"></div>
@@ -545,6 +698,33 @@
   </footer>
   
   <script>
+    // Promo popup functionality
+    function showPromo() {
+      const popup = document.getElementById('promoPopup');
+      const body = document.body;
+      
+      popup.classList.add('show');
+      body.classList.add('promo-active');
+    }
+
+    function closePromo() {
+      const popup = document.getElementById('promoPopup');
+      const body = document.body;
+      
+      popup.classList.remove('show');
+      body.classList.remove('promo-active');
+      
+      // Store in sessionStorage so it doesn't show again this session
+      sessionStorage.setItem('promoShown', 'true');
+    }
+
+    // Show promo after 2 seconds if not already shown
+    document.addEventListener('DOMContentLoaded', function() {
+      if (!sessionStorage.getItem('promoShown')) {
+        setTimeout(showPromo, 2000);
+      }
+    });
+
     // Add some interactive particles
     function createParticle() {
       const particle = document.createElement('div');
@@ -572,30 +752,27 @@
       });
     });
 
-
-  // Reddit tracking via dataLayer for CTA click
-  document.addEventListener("DOMContentLoaded", function () {
-    const button = document.querySelector(".cta-button");
-    if (button) {
-      button.addEventListener("click", function () {
-        window.dataLayer = window.dataLayer || [];
-        window.dataLayer.push({
-          event: "GetAPIKeyClick",
-          conversionId: "a2_h8xkld936vku",
-          itemCount: 1,
-          currency: "USD",
-          transactionValue: 30,
-          productRows: [{
-            id: "plan-30-month",
-            category: "Subscription",
-            name: "MontgomeryNX Proxy"
-          }]
+    // Reddit tracking via dataLayer for CTA click
+    document.addEventListener("DOMContentLoaded", function () {
+      const buttons = document.querySelectorAll(".cta-button, .promo-cta");
+      buttons.forEach(button => {
+        button.addEventListener("click", function () {
+          window.dataLayer = window.dataLayer || [];
+          window.dataLayer.push({
+            event: "GetAPIKeyClick",
+            conversionId: "a2_h8xkld936vku",
+            itemCount: 1,
+            currency: "USD",
+            transactionValue: button.classList.contains('promo-cta') ? 5 : 30,
+            productRows: [{
+              id: "plan-30-month",
+              category: "Subscription",
+              name: "MontgomeryNX Proxy"
+            }]
+          });
         });
       });
-    }
-  });
-</script>
-  
-  
+    });
+  </script>
 </body>
 </html>
