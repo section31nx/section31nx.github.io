@@ -502,25 +502,47 @@
 
   <footer>
     <div class="container">
-      <p>This service is intended for lawful access to publicly available data only. Use on login-required, private, or terms-violating sites is not allowed.</p>
+      <p>
+        <strong>Disclaimer:</strong><br>
+        This service is intended for lawful access to publicly available data only.<br>
+        Use on login-required, private, or terms-violating sites is not allowed.<br>
+        DMCA takedowns honored; we do not log URLs, request bodies, or personal data.
+      </p>
+  
+      <p style="margin-top: 0.5em;">
+        <a href="/terms_of_service.html" target="_blank" rel="noopener"
+           style="text-decoration: underline; font-weight: bold;"
+           onclick="gtag('event', 'click', { event_category: 'Footer', event_label: 'Footer Link - Terms of Service' })">
+          Terms of Service
+        </a>
+        &nbsp;|&nbsp;
+        <a href="/privacy_policy.html" target="_blank" rel="noopener"
+           style="text-decoration: underline; font-weight: bold;"
+           onclick="gtag('event', 'click', { event_category: 'Footer', event_label: 'Footer Link - Privacy Policy' })">
+          Privacy Policy
+        </a>
+      </p>
+  
+      <hr style="margin: 1em 0; border: none; border-top: 1px solid #ccc;">
+  
       <p>
         <a href="https://github.com/section31nx/mx_requests" target="_blank" rel="noopener"
            onclick="gtag('event', 'click', { event_category: 'Footer', event_label: 'Footer Link - GitHub' })">
           GitHub
-        </a> •
+        </a> &bull;
         <a href="https://pypi.org/project/mx-requests/" target="_blank" rel="noopener"
            onclick="gtag('event', 'click', { event_category: 'Footer', event_label: 'Footer Link - PyPI' })">
           PyPI Package
-        </a> •
+        </a> &bull;
         <a href="https://www.montgomerynx.com" rel="canonical"
            onclick="gtag('event', 'click', { event_category: 'Footer', event_label: 'Footer Link - Homepage' })">
           montgomerynx.com
         </a>
       </p>
+  
       <p>© 2025 MontgomeryNX</p>
     </div>
   </footer>
-
   <script>
     // Add some interactive particles
     function createParticle() {
