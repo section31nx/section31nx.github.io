@@ -1,13 +1,14 @@
 name: Generate Sitemap
 
 on:
-  push:
-    branches:
-      - main
-  workflow_dispatch:
+  workflow_run:
+    workflows: ["pages-build-deployment"]
+    types:
+      - completed
 
 jobs:
   build:
+    if: ${{ github.event.workflow_run.conclusion == 'success' }}
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
@@ -26,11 +27,10 @@ jobs:
           git config --global user.name "github-actions[bot]"
           git config --global user.email "github-actions[bot]@users.noreply.github.com"
       
-          # Check for changes before committing
           if git diff --quiet sitemap.xml; then
             echo "No changes in sitemap.xml, skipping commit."
           else
             git add sitemap.xml
-            git commit -m "Update sitemap"
+            git commit -m "Update sitemap after deployment"
             git push origin HEAD:main
           fi
