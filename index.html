@@ -296,6 +296,13 @@
       margin-bottom: 2rem;
     }
 
+    .cta-buttons {
+      display: flex;
+      gap: 1rem;
+      align-items: center;
+      flex-wrap: wrap;
+    }
+
     .cta-button {
       display: inline-block;
       background: linear-gradient(45deg, #00ff88, #00d4ff);
@@ -329,6 +336,28 @@
 
     .cta-button:hover::before {
       left: 100%;
+    }
+
+    .docs-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      color: #00d4ff;
+      text-decoration: none;
+      font-weight: 600;
+      padding: 0.8rem 1.5rem;
+      border: 2px solid rgba(0, 212, 255, 0.3);
+      border-radius: 50px;
+      transition: all 0.3s ease;
+      backdrop-filter: blur(10px);
+      background: rgba(0, 212, 255, 0.1);
+    }
+
+    .docs-link:hover {
+      border-color: #00d4ff;
+      background: rgba(0, 212, 255, 0.2);
+      transform: translateY(-2px);
+      box-shadow: 0 8px 25px rgba(0, 212, 255, 0.2);
     }
 
     /* Code demo */
@@ -534,6 +563,10 @@
         min-width: auto;
       }
 
+      .cta-buttons {
+        justify-content: center;
+      }
+
       body.promo-active {
         padding-top: 120px;
       }
@@ -625,10 +658,14 @@ a.gumroad-button:hover::before {
       <div class="hero-content">
         <h1>Stop wrestling with your scraper code.<br>Start shipping.</h1>
         <p>Drop-in proxy with IP rotation, smart retries, and caching. One line of code. Zero infrastructure headaches.</p>
-        <a href="https://therealbct.gumroad.com/l/bsfreescraping" target="_blank" class="gumroad-button cta-button">
-          Get API Key $30/mo<br>on
-        </a>
-
+        <div class="cta-buttons">
+          <a href="https://therealbct.gumroad.com/l/bsfreescraping" target="_blank" class="gumroad-button cta-button">
+            Get API Key $30/mo
+          </a>
+          <a href="/docs" class="docs-link">
+            📚 View API Docs
+          </a>
+        </div>
       </div>
       
       <div class="code-demo">
@@ -701,7 +738,7 @@ a.gumroad-button:hover::before {
         Cancel anytime, no long-term contracts
       </div>
         <a href="https://therealbct.gumroad.com/l/bsfreescraping" target="_blank" class="cta-button gumroad-button">
-          Start Scraping Now<br>Buy on
+          Start Scraping Now
         </a>
     </section>
   </div>
@@ -737,91 +774,6 @@ a.gumroad-button:hover::before {
         <a href="https://pypi.org/project/mx-requests/" target="_blank" rel="noopener">
           PyPI Package
         </a> &bull;
-        <a href="https://www.montgomerynx.com" target="_blank" rel="noopener">
-          montgomerynx.com
-        </a>
-      </p>
-  
-      <p>© 2025 MontgomeryNX</p>
-    </div>
-  </footer>
-  
-  <script>
-    // Promo popup functionality
-    function showPromo() {
-      const popup = document.getElementById('promoPopup');
-      const body = document.body;
-      
-      popup.classList.add('show');
-      body.classList.add('promo-active');
-    }
-
-    function closePromo() {
-      const popup = document.getElementById('promoPopup');
-      const body = document.body;
-      
-      popup.classList.remove('show');
-      body.classList.remove('promo-active');
-      
-      // Store in sessionStorage so it doesn't show again this session
-      sessionStorage.setItem('promoShown', 'true');
-    }
-
-    // Show promo after 2 seconds if not already shown
-    document.addEventListener('DOMContentLoaded', function() {
-      if (!sessionStorage.getItem('promoShown')) {
-        setTimeout(showPromo, 2000);
-      }
-    });
-
-    // Add some interactive particles
-    function createParticle() {
-      const particle = document.createElement('div');
-      particle.className = 'particle';
-      particle.style.left = Math.random() * 100 + '%';
-      particle.style.top = Math.random() * 100 + '%';
-      particle.style.animationDuration = (Math.random() * 3 + 3) + 's';
-      document.querySelector('.bg-particles').appendChild(particle);
-      
-      setTimeout(() => {
-        particle.remove();
-      }, 6000);
-    }
-
-    // Create particles periodically
-    setInterval(createParticle, 2000);
-
-    // Add smooth scrolling for any internal links
-    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-      anchor.addEventListener('click', function (e) {
-        e.preventDefault();
-        document.querySelector(this.getAttribute('href')).scrollIntoView({
-          behavior: 'smooth'
-        });
-      });
-    });
-
-    // Reddit tracking via dataLayer for CTA click
-    document.addEventListener("DOMContentLoaded", function () {
-      const buttons = document.querySelectorAll(".cta-button, .promo-cta");
-      buttons.forEach(button => {
-        button.addEventListener("click", function () {
-          window.dataLayer = window.dataLayer || [];
-          window.dataLayer.push({
-            event: "GetAPIKeyClick",
-            conversionId: "a2_h8xkld936vku",
-            itemCount: 1,
-            currency: "USD",
-            transactionValue: button.classList.contains('promo-cta') ? 5 : 30,
-            productRows: [{
-              id: "plan-30-month",
-              category: "Subscription",
-              name: "MontgomeryNX Proxy"
-            }]
-          });
-        });
-      });
-    });
-  </script>
-</body>
-</html>
+        <a href="/docs" target="_blank" rel="noopener">
+          API Documentation
+        </a> &bull;
