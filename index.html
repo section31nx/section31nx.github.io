@@ -67,6 +67,30 @@
   <!-- Gumroad page loader -->
   <script src="https://gumroad.com/js/gumroad.js"></script>
 
+  <!-- Promo -->
+  <script>
+    function showPromo() {
+      const popup = document.getElementById('promoPopup');
+      const body = document.body;
+      popup.classList.add('show');
+      body.classList.add('promo-active');
+    }
+  
+    function closePromo() {
+      const popup = document.getElementById('promoPopup');
+      const body = document.body;
+      popup.classList.remove('show');
+      body.classList.remove('promo-active');
+      sessionStorage.setItem('promoShown', 'true');
+    }
+  
+    document.addEventListener('DOMContentLoaded', function() {
+      if (!sessionStorage.getItem('promoShown')) {
+        setTimeout(showPromo, 2000);
+      }
+    });
+  </script>
+  
   <style>
     * {
       margin: 0;
