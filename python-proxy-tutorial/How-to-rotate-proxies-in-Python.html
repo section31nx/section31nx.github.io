@@ -3,102 +3,44 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>How to Rotate Proxies in Python with ProxyHub</title>
+  <title>How to Rotate Proxies in Python with ProxyHub | Python Proxy Tutorials</title>
+  <meta name="description" content="Step-by-step guide to integrating ProxyHub’s IP rotation endpoints into your Python scraper—avoid bans, distribute load, and stay reliable.">
+  <link rel="canonical" href="https://www.montgomerynx.com/python-proxy-tutorial/How-to-rotate-proxies-in-Python.html">
+  <link rel="icon" href="/favicon.ico" />
 
-  <!-- Shared tutorial navbar + burger CSS -->
-  <style>
-    .tutorial-nav {
-      background: rgba(15,15,20,0.85);
-      backdrop-filter: blur(6px);
-      position: sticky; top: 0; z-index: 100;
-      padding: 0.5rem 1rem;
-    }
-    .nav-container {
-      max-width: 800px; margin: 0 auto;
-      display: flex; align-items: center; justify-content: space-between;
-    }
-    .tutorial-nav .logo {
-      color: #fff; text-decoration: none;
-      font-weight: 700; font-size: 1rem;
-    }
-    .burger {
-      display: flex; flex-direction: column;
-      justify-content: space-between;
-      width: 24px; height: 18px;
-      background: none; border: none;
-      cursor: pointer; padding: 0;
-    }
-    .burger span {
-      display: block; height: 3px; width: 100%;
-      background: #fff; border-radius: 2px;
-      transition: transform 0.3s, opacity 0.3s;
-    }
-    .nav-links {
-      position: absolute; top: 100%; left: 0; right: 0;
-      background: rgba(15,15,20,0.95);
-      list-style: none; display: none;
-      flex-direction: column; padding: 1rem 0;
-      text-align: center;
-    }
-    .nav-links.show { display: flex; }
-    .nav-links li + li { margin-top: 0.75rem; }
-    .nav-links a {
-      color: #eee; text-decoration: none;
-      font-size: 0.95rem; font-weight: 500;
-      padding: 0.25rem 1rem; display: inline-block;
-    }
-    .nav-links a.active { color: #00ff88; }
-    .burger.open span:nth-child(1) {
-      transform: translateY(7.5px) rotate(45deg);
-    }
-    .burger.open span:nth-child(2) { opacity: 0; }
-    .burger.open span:nth-child(3) {
-      transform: translateY(-7.5px) rotate(-45deg);
-    }
-    @media (min-width: 768px) {
-      .burger { display: none; }
-      .nav-links {
-        position: static; display: flex !important;
-        flex-direction: row; background: transparent;
-        padding: 0;
+  <!-- shared base + navbar + code styles -->
+  <link rel="stylesheet" href="/assets/css/tutorial.css">
+  <!-- only rotate-page overrides -->
+  <link rel="stylesheet" href="/assets/css/rotate.css">
+
+  <!-- BreadcrumbList schema.org JSON-LD -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    "itemListElement": [
+      {
+        "@type": "ListItem",
+        "position": 1,
+        "name": "Home",
+        "item": "https://www.montgomerynx.com/"
+      },
+      {
+        "@type": "ListItem",
+        "position": 2,
+        "name": "Python Proxy Tutorials",
+        "item": "https://www.montgomerynx.com/python-proxy-tutorial/"
+      },
+      {
+        "@type": "ListItem",
+        "position": 3,
+        "name": "Rotate Proxies",
+        "item": "https://www.montgomerynx.com/python-proxy-tutorial/How-to-rotate-proxies-in-Python.html"
       }
-      .nav-links li + li { margin: 0 0 0 1.5rem; }
-    }
-  </style>
-
-  <!-- Page-specific styling -->
-  <style>
-    body {
-      font-family: Arial, sans-serif;
-      line-height: 1.6;
-      margin: 0;
-      padding: 20px;
-      max-width: 800px;
-      margin-left: auto;
-      margin-right: auto;
-    }
-    h1, h2, h3 { color: #333; }
-    pre {
-      background: #f4f4f4;
-      padding: 10px;
-      overflow-x: auto;
-    }
-    code {
-      background: #eee;
-      padding: 2px 4px;
-    }
-    ul, ol {
-      margin: 0 0 1em 1.5em;
-    }
-    .note {
-      background: #fff3cd;
-      padding: 10px;
-      border-left: 4px solid #ffeeba;
-      margin: 1em 0;
-    }
-  </style>
+    ]
+  }
+  </script>
 </head>
-
 <body>
   <!-- Navbar -->
   <nav class="tutorial-nav">
@@ -116,21 +58,109 @@
     </div>
   </nav>
 
-  <!-- Content -->
-  <h1>How to Rotate Proxies in Python with ProxyHub</h1>
-  <p>Rotating your proxy IPs is essential to avoid bans, distribute load, and ensure reliable scraping. In this guide, we’ll walk through how to integrate ProxyHub’s IP rotation endpoints into a Python scraping workflow in just a few lines of code.</p>
+  <div class="container">
+    <h1>How to Rotate Proxies in Python with ProxyHub</h1>
 
-  <h2>📖 Table of Contents</h2>
-  <ul>
-    <li><a href="#why-rotate-proxies">Why Rotate Proxies?</a></li>
-    <li><a href="#getting-started">Getting Started</a></li>
-    <li><a href="#fetch-your-current-proxy-ip">Fetch Your Current Proxy IP</a></li>
-    <li><a href="#force-a-proxy-rotation">Force a Proxy Rotation</a></li>
-    <li><a href="#putting-it-all-together">Putting It All Together</a></li>
-    <li><a href="#best-practices--tips">Best Practices &amp; Tips</a></li>
-  </ul>
+    <p>Rotating your proxy IPs is essential to avoid bans, distribute load, and ensure reliable scraping. In this guide, we’ll walk through how to integrate ProxyHub’s IP rotation endpoints into a Python scraping workflow in just a few lines of code.</p>
 
-  <!-- ... rest of your sections ... -->
+    <h2>📖 Table of Contents</h2>
+    <ul>
+      <li><a href="#why-rotate-proxies">Why Rotate Proxies?</a></li>
+      <li><a href="#getting-started">Getting Started</a></li>
+      <li><a href="#fetch-your-current-proxy-ip">Fetch Your Current Proxy IP</a></li>
+      <li><a href="#force-a-proxy-rotation">Force a Proxy Rotation</a></li>
+      <li><a href="#putting-it-all-together">Putting It All Together</a></li>
+      <li><a href="#best-practices--tips">Best Practices &amp; Tips</a></li>
+    </ul>
+
+    <h2 id="why-rotate-proxies">Why Rotate Proxies?</h2>
+    <ul>
+      <li><strong>Avoid IP bans:</strong> Sites often block repeated requests from the same IP.</li>
+      <li><strong>Distribute traffic:</strong> Spread requests across many exit IPs for better throughput.</li>
+      <li><strong>Bypass geo-blocks:</strong> Rotate through proxies in different regions if supported.</li>
+    </ul>
+
+    <h2 id="getting-started">Getting Started</h2>
+    <ol>
+      <li>Sign up at <a href="https://proxy.montgomerynx.com">ProxyHub</a> and grab your API key.</li>
+      <li>Install <code>requests</code>:
+        <pre><code class="language-bash">pip install requests</code></pre>
+      </li>
+      <li>Define a simple helper in Python:
+        <pre><code class="language-python">import requests
+
+API_KEY = "YOUR_API_KEY"
+BASE = f"https://proxy.montgomerynx.com/{API_KEY}"</code></pre>
+      </li>
+    </ol>
+
+    <h2 id="fetch-your-current-proxy-ip">Fetch Your Current Proxy IP</h2>
+    <p>Before rotating, you may want to know which IP you’re currently using:</p>
+    <pre><code class="language-python">def get_current_ip():
+    res = requests.get(f"{BASE}/ip")
+    res.raise_for_status()
+    return res.json()["ip"]
+
+print("Current exit IP:", get_current_ip())</code></pre>
+    <p><em>Endpoint</em>: <code>GET /{api_key}/ip</code><br>
+    <em>Returns</em>: <code>{ "ip": "123.45.67.89" }</code></p>
+
+    <h2 id="force-a-proxy-rotation">Force a Proxy Rotation</h2>
+    <p>To obtain a fresh exit IP on demand:</p>
+    <pre><code class="language-python">def rotate_ip():
+    res = requests.get(f"{BASE}/force_rotate_ip")
+    res.raise_for_status()
+    return res.json()["ip"]
+
+new_ip = rotate_ip()
+print("Rotated to new IP:", new_ip)</code></pre>
+    <p><em>Endpoint</em>: <code>GET /{api_key}/force_rotate_ip</code><br>
+    <em>Returns</em>: <code>{ "ip": "98.76.54.32" }</code></p>
+
+    <h2 id="putting-it-all-together">Putting It All Together</h2>
+    <pre><code class="language-python">import requests
+from time import sleep
+
+API_KEY = "YOUR_API_KEY"
+BASE = f"https://proxy.montgomerynx.com/{API_KEY}"
+TARGET_URL = "https://httpbin.org/ip"
+
+def get_current_ip():
+    return requests.get(f"{BASE}/ip").json()["ip"]
+
+def rotate_ip():
+    return requests.get(f"{BASE}/force_rotate_ip").json()["ip"]
+
+def fetch_with_retries(url, max_retries=3):
+    for attempt in range(1, max_retries + 1):
+        resp = requests.get(f"{BASE}/{url}")
+        if resp.status_code == 200:
+            return resp.text
+        print(f"Attempt {attempt} failed (status {resp.status_code}), rotating IP…")
+        rotate_ip()
+        sleep(1)
+    resp.raise_for_status()
+
+if __name__ == "__main__":
+    print("Starting IP:", get_current_ip())
+    result = fetch_with_retries(TARGET_URL)
+    print("Fetched data:", result)
+    print("Final IP:", get_current_ip())</code></pre>
+
+    <h2 id="best-practices--tips">Best Practices &amps; Tips</h2>
+    <ul>
+      <li><strong>Rotate proactively:</strong> Even without failures, rotate every <code>N</code> requests to spread load.</li>
+      <li><strong>Cache IP checks:</strong> Don’t call <code>/ip</code> before every single request—only when needed.</li>
+      <li><strong>Handle rate limits:</strong> Watch for <code>402 Quota exceeded</code> and back off gracefully.</li>
+      <li><strong>Use exponential backoff:</strong> After a rotation, wait a bit before retrying to avoid bursts.</li>
+    </ul>
+
+    <p>With just a couple of helper functions and two API calls, you can build a robust, rotation-enabled Python scraper in under 20 lines of code. Happy scraping!</p>
+
+    <div class="next-link">
+      <a href="/python-proxy-tutorial/Error-Handling.html">Next: Error Handling →</a>
+    </div>
+  </div>
 
   <!-- Burger toggle script -->
   <script>
