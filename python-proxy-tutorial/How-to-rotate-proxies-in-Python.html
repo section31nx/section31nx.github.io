@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>How to Rotate Proxies in Python with ProxyHub</title>
+  <style>
+    body { font-family: Arial, sans-serif; line-height: 1.6; margin: 0; padding: 20px; max-width: 800px; margin-left: auto; margin-right: auto; }
+    h1, h2, h3 { color: #333; }
+    pre { background: #f4f4f4; padding: 10px; overflow-x: auto; }
+    code { background: #eee; padding: 2px 4px; }
+    ul { margin: 0 0 1em 1.5em; }
+    .note { background: #fff3cd; padding: 10px; border-left: 4px solid #ffeeba; margin: 1em 0; }
+  </style>
+</head>
+<body>
+
+  <h1>How to Rotate Proxies in Python with ProxyHub</h1>
+
+  <p>Rotating your proxy IPs is essential to avoid bans, distribute load, and ensure reliable scraping. In this guide, we’ll walk through how to integrate ProxyHub’s IP rotation endpoints into a Python scraping workflow in just a few lines of code.</p>
+
+  <h2>📖 Table of Contents</h2>
+  <ul>
+    <li><a href="#why-rotate-proxies">Why Rotate Proxies?</a></li>
+    <li><a href="#getting-started">Getting Started</a></li>
+    <li><a href="#fetch-your-current-proxy-ip">Fetch Your Current Proxy IP</a></li>
+    <li><a href="#force-a-proxy-rotation">Force a Proxy Rotation</a></li>
+    <li><a href="#putting-it-all-together">Putting It All Together</a></li>
+    <li><a href="#best-practices--tips">Best Practices &amp; Tips</a></li>
+  </ul>
+
+  <h2 id="why-rotate-proxies">Why Rotate Proxies?</h2>
+  <ul>
+    <li><strong>Avoid IP bans:</strong> Sites often block repeated requests from the same IP.</li>
+    <li><strong>Distribute traffic:</strong> Spread requests across many exit IPs for better throughput.</li>
+    <li><strong>Bypass geo-blocks:</strong> Rotate through proxies in different regions if supported.</li>
+  </ul>
+
+  <h2 id="getting-started">Getting Started</h2>
+  <ol>
+    <li>Sign up at <a href="https://proxy.montgomerynx.com">ProxyHub</a> and grab your API key.</li>
+    <li>Install <code>requests</code>:
+      <pre><code>pip install requests</code></pre>
+    </li>
+    <li>Define a simple helper in Python:
+      <pre><code>import requests
+
+API_KEY = "YOUR_API_KEY"
+BASE = f"https://proxy.montgomerynx.com/{API_KEY}"</code></pre>
+    </li>
+  </ol>
+
+  <h2 id="fetch-your-current-proxy-ip">Fetch Your Current Proxy IP</h2>
+  <p>Before rotating, you may want to know which IP you’re currently using:</p>
+  <pre><code>def get_current_ip():
+    res = requests.get(f"{BASE}/ip")
+    res.raise_for_status()
+    return res.json()["ip"]
+
+print("Current exit IP:", get_current_ip())</code></pre>
+
+  <p><em>Endpoint</em>: <code>GET /{api_key}/ip</code><br>
+  <em>Returns</em>: <code>{ "ip": "123.45.67.89" }</code></p>
+
+  <h2 id="force-a-proxy-rotation">Force a Proxy Rotation</h2>
+  <p>To obtain a fresh exit IP on demand:</p>
+  <pre><code>def rotate_ip():
+    res = requests.get(f"{BASE}/force_rotate_ip")
+    res.raise_for_status()
+    return res.json()["ip"]
+
+new_ip = rotate_ip()
+print("Rotated to new IP:", new_ip)</code></pre>
+
+  <p><em>Endpoint</em>: <code>GET /{api_key}/force_rotate_ip</code><br>
+  <em>Returns</em>: <code>{ "ip": "98.76.54.32" }</code></p>
+
+  <h2 id="putting-it-all-together">Putting It All Together</h2>
+  <p>Here’s a sample scraper that:</p>
+  <ul>
+    <li><strong>Fetches</strong> your current IP</li>
+    <li><strong>Rotates</strong> when requests start failing</li>
+    <li><strong>Makes</strong> proxied requests to a target URL</li>
+  </ul>
+  <pre><code>import requests
+from time import sleep
+
+API_KEY = "YOUR_API_KEY"
+BASE = f"https://proxy.montgomerynx.com/{API_KEY}"
+TARGET_URL = "https://httpbin.org/ip"
+
+def get_current_ip():
+    return requests.get(f"{BASE}/ip").json()["ip"]
+
+def rotate_ip():
+    return requests.get(f"{BASE}/force_rotate_ip").json()["ip"]
+
+def fetch_with_retries(url, max_retries=3):
+    for attempt in range(1, max_retries + 1):
+        resp = requests.get(f"{BASE}/{url}")
+        if resp.status_code == 200:
+            return resp.text
+        print(f"Attempt {attempt} failed (status {resp.status_code}), rotating IP…")
+        rotate_ip()
+        sleep(1)
+    resp.raise_for_status()
+
+if __name__ == "__main__":
+    print("Starting IP:", get_current_ip())
+    result = fetch_with_retries(TARGET_URL)
+    print("Fetched data:", result)
+    print("Final IP:", get_current_ip())</code></pre>
+
+  <h2 id="best-practices--tips">Best Practices &amp; Tips</h2>
+  <ul>
+    <li><strong>Rotate proactively:</strong> Even without failures, rotate every <code>N</code> requests to spread load.</li>
+    <li><strong>Cache IP checks:</strong> Don’t call <code>/ip</code> before every single request—only when needed.</li>
+    <li><strong>Handle rate limits:</strong> Watch for <code>402 Quota exceeded</code> and back off gracefully.</li>
+    <li><strong>Use exponential backoff:</strong> After a rotation, wait a bit before retrying to avoid bursts.</li>
+  </ul>
+
+  <p>With just a couple of helper functions and two API calls, you can build a robust, rotation-enabled Python scraper in under 20 lines of code. Happy scraping!</p>
+
+</body>
+</html>
