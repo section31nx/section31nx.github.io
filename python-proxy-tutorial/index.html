@@ -3,40 +3,47 @@
 <head>
   <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
-  <title>Python Proxy Tutorials</title>
-  <style>
-    body {
-      font-family: Arial, sans-serif;
-      max-width: 800px;
-      margin: 40px auto;
-      line-height: 1.6;
-      padding: 0 20px;
-    }
-    h1 { text-align: center; }
-    ul { list-style: none; padding: 0; }
-    li {
-      margin: 0.75em 0;
-      padding: 0.75em 1em;
-      background: #f4f4f4;
-      border-radius: 6px;
-      transition: background 0.2s;
-    }
-    a {
-      text-decoration: none;
-      color: #333;
-      display: block;
-    }
-    li:hover { background: #e0e0e0; }
-  </style>
+  <title>Python Proxy Tutorials | MontgomeryNX</title>
+  <meta name="description" content="Step-by-step Python proxy tutorials: getting started, rotating IPs, error handling, advanced usage. Powered by MontgomeryNX ProxyHub.">
+  <link rel="canonical" href="https://www.montgomerynx.com/python-proxy-tutorial/index.html">
+  <link rel="icon" href="/favicon.ico" />
+
+  <!-- shared base + navbar + code styles -->
+  <link rel="stylesheet" href="/assets/css/tutorial.css">
 </head>
 <body>
-  <h1>Python Proxy Tutorials</h1>
-  <p>Learn how to integrate and use ProxyHub to make your Python scrapers rock-solid.</p>
-  <ul>
-    <li><a href="getting-started.html">🏁 Getting Started</a></li>
-    <li><a href="How-to-rotate-proxies-in-Python.html">🔄 Rotate Proxies</a></li>
-    <li><a href="Error-Handling.html">⚠️ Error Handling</a></li>
-    <li><a href="Advanced.html">🚀 Advanced Usage</a></li>
-  </ul>
+  <!-- Navbar -->
+  <nav class="tutorial-nav">
+    <div class="nav-container">
+      <a href="/python-proxy-tutorial/" class="logo">Python Proxy Tutorials</a>
+      <button class="burger" aria-label="Toggle menu">
+        <span></span><span></span><span></span>
+      </button>
+      <ul class="nav-links">
+        <li><a href="/python-proxy-tutorial/getting-started.html">🏁 Getting Started</a></li>
+        <li><a href="/python-proxy-tutorial/How-to-rotate-proxies-in-Python.html">🔄 Rotate Proxies</a></li>
+        <li><a href="/python-proxy-tutorial/Error-Handling.html">⚠️ Error Handling</a></li>
+        <li><a href="/python-proxy-tutorial/Advanced.html">🚀 Advanced</a></li>
+      </ul>
+    </div>
+  </nav>
+
+  <main class="container">
+    <h1>Python Proxy Tutorials</h1>
+    <p>Learn how to integrate and use ProxyHub to make your Python scrapers rock-solid.</p>
+    <ul class="tutorial-list">
+      <li><a href="getting-started.html">🏁 Getting Started</a></li>
+      <li><a href="How-to-rotate-proxies-in-Python.html">🔄 Rotate Proxies</a></li>
+      <li><a href="Error-Handling.html">⚠️ Error Handling</a></li>
+      <li><a href="Advanced.html">🚀 Advanced Usage</a></li>
+    </ul>
+  </main>
+
+  <script>
+    document.querySelector('.burger').addEventListener('click', function(){
+      this.classList.toggle('open');
+      document.querySelector('.nav-links').classList.toggle('show');
+    });
+  </script>
 </body>
 </html>
