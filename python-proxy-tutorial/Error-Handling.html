@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Error Handling in Python Proxies | ProxyHub Tutorials</title>
+
+  <!-- Shared tutorial navbar + burger CSS -->
+  <style>
+    .tutorial-nav {
+      background: rgba(15,15,20,0.85);
+      backdrop-filter: blur(6px);
+      position: sticky; top: 0; z-index: 100;
+      padding: 0.5rem 1rem;
+    }
+    .nav-container {
+      max-width: 800px; margin: 0 auto;
+      display: flex; align-items: center; justify-content: space-between;
+    }
+    .tutorial-nav .logo {
+      color: #fff; text-decoration: none;
+      font-weight: 700; font-size: 1rem;
+    }
+    .burger {
+      display: flex; flex-direction: column;
+      justify-content: space-between;
+      width: 24px; height: 18px;
+      background: none; border: none;
+      cursor: pointer; padding: 0;
+    }
+    .burger span {
+      display: block; height: 3px; width: 100%;
+      background: #fff; border-radius: 2px;
+      transition: transform 0.3s, opacity 0.3s;
+    }
+    .nav-links {
+      position: absolute; top: 100%; left: 0; right: 0;
+      background: rgba(15,15,20,0.95);
+      list-style: none; display: none;
+      flex-direction: column; padding: 1rem 0;
+      text-align: center;
+    }
+    .nav-links.show { display: flex; }
+    .nav-links li + li { margin-top: 0.75rem; }
+    .nav-links a {
+      color: #eee; text-decoration: none;
+      font-size: 0.95rem; font-weight: 500;
+      padding: 0.25rem 1rem; display: inline-block;
+    }
+    .nav-links a.active { color: #00ff88; }
+    .burger.open span:nth-child(1) {
+      transform: translateY(7.5px) rotate(45deg);
+    }
+    .burger.open span:nth-child(2) { opacity: 0; }
+    .burger.open span:nth-child(3) {
+      transform: translateY(-7.5px) rotate(-45deg);
+    }
+    @media (min-width: 768px) {
+      .burger { display: none; }
+      .nav-links {
+        position: static; display: flex !important;
+        flex-direction: row; background: transparent;
+        padding: 0;
+      }
+      .nav-links li + li { margin: 0 0 0 1.5rem; }
+    }
+  </style>
+
+  <!-- Page-specific styling -->
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      line-height: 1.6;
+      margin: 0;
+      padding: 20px;
+      max-width: 800px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+    h1, h2, h3 { color: #333; }
+    pre {
+      background: #f4f4f4;
+      padding: 10px;
+      overflow-x: auto;
+    }
+    code {
+      background: #eee;
+      padding: 2px 4px;
+    }
+    ul, ol {
+      margin: 0 0 1em 1.5em;
+    }
+    .note {
+      background: #fff3cd;
+      padding: 10px;
+      border-left: 4px solid #ffeeba;
+      margin: 1em 0;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Navbar -->
+  <nav class="tutorial-nav">
+    <div class="nav-container">
+      <a href="/python-proxy-tutorial/" class="logo">Python Proxy Tutorials</a>
+      <button class="burger" aria-label="Toggle menu">
+        <span></span><span></span><span></span>
+      </button>
+      <ul class="nav-links">
+        <li><a href="/python-proxy-tutorial/getting-started.html">Getting Started</a></li>
+        <li><a href="/python-proxy-tutorial/How-to-rotate-proxies-in-Python.html">Rotate Proxies</a></li>
+        <li><a href="/python-proxy-tutorial/Error-Handling.html" class="active">Error Handling</a></li>
+        <li><a href="/python-proxy-tutorial/Advanced.html">Advanced</a></li>
+      </ul>
+    </div>
+  </nav>
+
+  <h1>Error Handling with ProxyHub in Python</h1>
+
+  <p>Robust scrapers need to gracefully handle HTTP errors, timeouts, and quota limits. In this guide, we’ll cover how to catch and react to common proxy-related errors when using ProxyHub.</p>
+
+  <h2>📖 Table of Contents</h2>
+  <ul>
+    <li><a href="#common-errors">Common Error Types</a></li>
+    <li><a href="#basic-exception-handling">Basic Exception Handling</a></li>
+    <li><a href="#retry-with-backoff">Retries &amp; Exponential Backoff</a></li>
+    <li><a href="#quota-exceeded">Handling Quota Exceeded (402)</a></li>
+    <li><a href="#timeouts-and-connection-failures">Timeouts &amp; Connection Failures</a></li>
+    <li><a href="#best-practices">Best Practices</a></li>
+  </ul>
+
+  <h2 id="common-errors">Common Error Types</h2>
+  <ul>
+    <li><strong>4xx Client Errors</strong> – bad request, unauthorized, rate limit</li>
+    <li><strong>5xx Server Errors</strong> – proxy service unavailable, gateway timeout</li>
+    <li><strong>Timeouts</strong> – network latency or proxy unresponsive</li>
+    <li><strong>Quota Exceeded</strong> – HTTP 402 when you hit your API limit</li>
+  </ul>
+
+  <h2 id="basic-exception-handling">Basic Exception Handling</h2>
+  <pre><code>import requests
+
+try:
+    resp = requests.get(proxied_url, timeout=10)
+    resp.raise_for_status()
+    data = resp.json()
+except requests.exceptions.HTTPError as e:
+    print("HTTP error:", e)
+except requests.exceptions.Timeout:
+    print("Request timed out")
+except requests.exceptions.RequestException as e:
+    print("Something went wrong:", e)
+</code></pre>
+
+  <h2 id="retry-with-backoff">Retries &amp; Exponential Backoff</h2>
+  <p>Wrap your calls in a retry loop:</p>
+  <pre><code>import time
+
+def fetch_with_retries(url, retries=3, backoff_factor=1):
+    for i in range(retries):
+        try:
+            r = requests.get(url, timeout=10)
+            r.raise_for_status()
+            return r.text
+        except Exception as e:
+            wait = backoff_factor * (2 ** i)
+            print(f"Attempt {i+1} failed: {e}. Retrying in {wait}s…")
+            time.sleep(wait)
+    raise RuntimeError("All retries failed")
+</code></pre>
+
+  <h2 id="quota-exceeded">Handling Quota Exceeded <code>402</code></h2>
+  <p>Detect and back off when your plan limits are hit:</p>
+  <pre><code>r = requests.get(url)
+if r.status_code == 402:
+    print("Quota exceeded! Waiting 1 hour before retry.")
+    time.sleep(3600)
+    r = requests.get(url)
+</code></pre>
+  <div class="note">
+    <strong>Note:</strong> You can also monitor your usage via the ProxyHub dashboard and alert proactively.
+  </div>
+
+  <h2 id="timeouts-and-connection-failures">Timeouts &amp; Connection Failures</h2>
+  <p>Set sensible timeouts and catch connection errors:</p>
+  <pre><code>try:
+    r = requests.get(url, timeout=5)
+except requests.exceptions.ConnectTimeout:
+    print("Connection timed out while connecting")
+except requests.exceptions.ReadTimeout:
+    print("Server took too long to send data")
+</code></pre>
+
+  <h2 id="best-practices">Best Practices</h2>
+  <ul>
+    <li>Always <code>raise_for_status()</code> to fail fast on HTTP errors.</li>
+    <li>Use a retry + backoff strategy to avoid hammering the service.</li>
+    <li>Catch <code>402 Quota exceeded</code> separately and alert or pause your scraper.</li>
+    <li>Log all exceptions with context (URL, headers, response code).</li>
+  </ul>
+
+  <p>With these patterns you’ll be equipped to handle most proxy-related failures and keep your scraper resilient.</p>
+
+  <!-- Burger toggle script -->
+  <script>
+    document.querySelector('.burger').addEventListener('click', function(){
+      this.classList.toggle('open');
+      document.querySelector('.nav-links').classList.toggle('show');
+    });
+  </script>
+
+</body>
+</html>
