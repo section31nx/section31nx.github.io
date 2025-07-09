@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Advanced Usage | ProxyHub Tutorials</title>
+
+  <!-- Shared tutorial navbar + burger CSS -->
+  <style>
+    .tutorial-nav {
+      background: rgba(15,15,20,0.85);
+      backdrop-filter: blur(6px);
+      position: sticky; top: 0; z-index: 100;
+      padding: 0.5rem 1rem;
+    }
+    .nav-container {
+      max-width: 800px; margin: 0 auto;
+      display: flex; align-items: center; justify-content: space-between;
+    }
+    .tutorial-nav .logo {
+      color: #fff; text-decoration: none;
+      font-weight: 700; font-size: 1rem;
+    }
+    .burger {
+      display: flex; flex-direction: column;
+      justify-content: space-between;
+      width: 24px; height: 18px;
+      background: none; border: none;
+      cursor: pointer; padding: 0;
+    }
+    .burger span {
+      display: block; height: 3px; width: 100%;
+      background: #fff; border-radius: 2px;
+      transition: transform 0.3s, opacity 0.3s;
+    }
+    .nav-links {
+      position: absolute; top: 100%; left: 0; right: 0;
+      background: rgba(15,15,20,0.95);
+      list-style: none; display: none;
+      flex-direction: column; padding: 1rem 0;
+      text-align: center;
+    }
+    .nav-links.show { display: flex; }
+    .nav-links li + li { margin-top: 0.75rem; }
+    .nav-links a {
+      color: #eee; text-decoration: none;
+      font-size: 0.95rem; font-weight: 500;
+      padding: 0.25rem 1rem; display: inline-block;
+    }
+    .nav-links a.active { color: #00ff88; }
+    .burger.open span:nth-child(1) {
+      transform: translateY(7.5px) rotate(45deg);
+    }
+    .burger.open span:nth-child(2) { opacity: 0; }
+    .burger.open span:nth-child(3) {
+      transform: translateY(-7.5px) rotate(-45deg);
+    }
+    @media (min-width: 768px) {
+      .burger { display: none; }
+      .nav-links {
+        position: static; display: flex !important;
+        flex-direction: row; background: transparent;
+        padding: 0;
+      }
+      .nav-links li + li { margin: 0 0 0 1.5rem; }
+    }
+  </style>
+
+  <!-- Page-specific styling -->
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      line-height: 1.6;
+      margin: 0;
+      padding: 20px;
+      max-width: 800px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+    h1, h2, h3 { color: #333; }
+    pre {
+      background: #f4f4f4;
+      padding: 10px;
+      overflow-x: auto;
+    }
+    code {
+      background: #eee;
+      padding: 2px 4px;
+    }
+    ul, ol {
+      margin: 0 0 1em 1.5em;
+    }
+    .note {
+      background: #d1ecf1;
+      padding: 10px;
+      border-left: 4px solid #bee5eb;
+      margin: 1em 0;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Navbar -->
+  <nav class="tutorial-nav">
+    <div class="nav-container">
+      <a href="/python-proxy-tutorial/" class="logo">Python Proxy Tutorials</a>
+      <button class="burger" aria-label="Toggle menu">
+        <span></span><span></span><span></span>
+      </button>
+      <ul class="nav-links">
+        <li><a href="/python-proxy-tutorial/getting-started.html">Getting Started</a></li>
+        <li><a href="/python-proxy-tutorial/How-to-rotate-proxies-in-Python.html">Rotate Proxies</a></li>
+        <li><a href="/python-proxy-tutorial/Error-Handling.html">Error Handling</a></li>
+        <li><a href="/python-proxy-tutorial/Advanced.html" class="active">Advanced</a></li>
+      </ul>
+    </div>
+  </nav>
+
+  <h1>Advanced Usage of ProxyHub in Python</h1>
+
+  <p>Take your scraper to the next level with advanced features: concurrent rotations, caching responses, custom headers, and Tor integration.</p>
+
+  <h2>📖 Table of Contents</h2>
+  <ul>
+    <li><a href="#concurrent-requests">Concurrent Requests &amp; Pooling</a></li>
+    <li><a href="#response-caching">Response Caching</a></li>
+    <li><a href="#custom-headers">Injecting Custom Headers</a></li>
+    <li><a href="#tor-support">Tor Network Support</a></li>
+    <li><a href="#logging-metrics">Logging &amp; Metrics</a></li>
+  </ul>
+
+  <h2 id="concurrent-requests">1. Concurrent Requests &amp; Pooling</h2>
+  <p>Use Python’s <code>concurrent.futures</code> to fire parallel requests and rotate IPs seamlessly:</p>
+  <pre><code>import requests
+from concurrent.futures import ThreadPoolExecutor
+
+API_KEY = "YOUR_API_KEY"
+BASE = f"https://proxy.montgomerynx.com/{API_KEY}"
+
+def fetch(url):
+    return requests.get(f"{BASE}/{url}", timeout=10).text
+
+urls = ["http://httpbin.org/ip"] * 10
+
+with ThreadPoolExecutor(max_workers=5) as executor:
+    results = executor.map(fetch, urls)
+
+for body in results:
+    print(body)</code></pre>
+
+  <h2 id="response-caching">2. Response Caching</h2>
+  <p>Avoid redundant network calls by caching successful responses:</p>
+  <pre><code>from functools import lru_cache
+
+@lru_cache(maxsize=128)
+def get_page(path):
+    res = requests.get(f"{BASE}/{path}")
+    res.raise_for_status()
+    return res.text
+
+print(get_page("data.json"))  # cached on subsequent calls</code></pre>
+
+  <h2 id="custom-headers">3. Injecting Custom Headers</h2>
+  <p>Add your own headers (e.g., User-Agent, cookies) to mimic browsers:</p>
+  <pre><code>headers = {
+    "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64)",
+    "Accept-Language": "en-US,en;q=0.9"
+}
+
+resp = requests.get(f"{BASE}/httpbin/headers", headers=headers)
+print(resp.json())</code></pre>
+
+  <div class="note">
+    <strong>Tip:</strong> Header rotation alongside IP rotation further disguises your scraper.
+  </div>
+
+  <h2 id="tor-support">4. Tor Network Support</h2>
+  <p>Route through Tor by appending a query flag:</p>
+  <pre><code>resp = requests.get(f"{BASE}/force_rotate_ip?use_tor=true")
+print("New Tor exit IP:", resp.json()["ip"])</code></pre>
+
+  <h2 id="logging-metrics">5. Logging &amp; Metrics</h2>
+  <p>Instrument your scraper for visibility:</p>
+  <pre><code>import logging
+
+logging.basicConfig(level=logging.INFO)
+logger = logging.getLogger("scraper")
+
+def fetch_and_log(url):
+    try:
+        resp = requests.get(url)
+        resp.raise_for_status()
+        logger.info(f"200 OK: {url}")
+        return resp.text
+    except Exception as e:
+        logger.error(f"Error fetching {url}: {e}")
+        raise</code></pre>
+
+  <p>Use Prometheus or your favorite APM to collect these logs for dashboards and alerts.</p>
+
+  <!-- Burger toggle script -->
+  <script>
+    document.querySelector('.burger').addEventListener('click', function(){
+      this.classList.toggle('open');
+      document.querySelector('.nav-links').classList.toggle('show');
+    });
+  </script>
+
+</body>
+</html>
