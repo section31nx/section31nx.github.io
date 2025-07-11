@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <title>Python requests vs Selenium: Web Scraping Guide | YourTutorialHub</title>
+  <meta name="description" content="Learn when to use Python requests for web scraping and when Selenium or Playwright is necessary. A detailed, structured guide with real Python examples.">
+  <link rel="canonical" href="https://www.montgomerynx.com/python-proxy-tutorial/python-requests-vs-selenium.html">
+  <link rel="icon" href="../favicon.ico">
+  <link rel="stylesheet" href="../assets/css/tutorial.css">
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    "mainEntity": [{
+      "@type": "Question",
+      "name": "When should I use Python requests for web scraping?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Use Python requests for web scraping when the site serves static HTML content or has APIs available. It is faster and uses fewer resources compared to Selenium."
+      }
+    },{
+      "@type": "Question",
+      "name": "Is Selenium better than requests for web scraping?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Selenium is better when you need to interact with JavaScript-heavy pages, handle dynamic content, or automate user actions like clicks and form submissions."
+      }
+    },{
+      "@type": "Question",
+      "name": "What is Playwright and how is it different from Selenium?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Playwright is a modern alternative to Selenium for browser automation. It supports multiple browsers, offers faster execution, and better handles modern web app features like single-page applications."
+      }
+    }]
+  }
+  </script>
+</head>
+<body>
+  <nav class="tutorial-nav">
+    <div class="nav-container">
+      <a href="/web-scraping-tutorials/" class="logo">Web Scraping Tutorials</a>
+      <button class="burger" aria-label="Toggle menu">
+        <span></span><span></span><span></span>
+      </button>
+      <ul class="nav-links">
+        <li><a href="/web-scraping-tutorials/getting-started.html">Getting Started</a></li>
+        <li><a href="/web-scraping-tutorials/python-requests-vs-selenium.html">Python requests vs Selenium</a></li>
+        <li><a href="/web-scraping-tutorials/finding-hidden-apis.html">Finding Hidden APIs</a></li>
+        <li><a href="/web-scraping-tutorials/advanced-techniques.html">Advanced Techniques</a></li>
+      </ul>
+    </div>
+  </nav>
+
+  <main class="container">
+    <h1>Python requests vs Selenium: Web Scraping Guide</h1>
+
+    <p>This guide examines two widely used approaches for web scraping with Python: using the <code>requests</code> library and employing browser automation tools such as Selenium or Playwright. It outlines the technical differences, use cases, and performance considerations to help you choose the most effective tool for your scraping tasks.</p>
+
+    <h2>Introduction</h2>
+    <p>Web scraping is an essential skill for data analysts, developers, and researchers who need to extract information from websites. The choice of tooling can have significant implications for speed, resource usage, and complexity. While browser automation provides flexibility for dynamic sites, simpler solutions like <code>requests</code> are often overlooked. This tutorial explains when and why you should prefer <code>requests</code> and when you must use full browser automation.</p>
+
+    <h2>Why Use Python requests?</h2>
+    <p>The <code>requests</code> library allows you to send HTTP requests to web servers and receive responses directly. For sites that serve static HTML or expose data through API endpoints, <code>requests</code> offers several advantages:</p>
+    <ul>
+      <li><strong>Performance:</strong> Fetching HTML over HTTP is faster than rendering pages in a browser engine.</li>
+      <li><strong>Lightweight Resource Usage:</strong> No graphical browser means reduced memory and CPU requirements.</li>
+      <li><strong>Deployment Simplicity:</strong> Easier to run in server environments where graphical interfaces are unavailable.</li>
+    </ul>
+
+    <h3>Example: Retrieving Static HTML</h3>
+    <pre><code>import requests
+
+url = "https://quotes.toscrape.com"
+response = requests.get(url)
+if response.status_code == 200:
+    print(response.text[:500])  # Preview first 500 characters of HTML
+else:
+    print("Failed to retrieve page")</code></pre>
+
+    <h2>When Browser Automation Is Required</h2>
+    <p>Many modern websites are built as single-page applications (SPAs) that rely heavily on JavaScript for rendering content dynamically. In such cases, fetching the raw HTML with <code>requests</code> may not provide access to the required data.</p>
+
+    <p>Browser automation frameworks like Selenium and Playwright control a real browser instance to load pages, execute JavaScript, and simulate user actions. These tools are appropriate when:</p>
+    <ul>
+      <li>The site uses infinite scroll or delayed content loading.</li>
+      <li>User authentication and session handling are required.</li>
+      <li>Interacting with forms, dropdowns, or buttons is necessary.</li>
+    </ul>
+
+    <h3>Example: Using Selenium for Dynamic Content</h3>
+    <pre><code>from selenium import webdriver
+from selenium.webdriver.common.by import By
+
+# Start browser instance
+driver = webdriver.Chrome()
+driver.get("https://quotes.toscrape.com")
+
+# Extract rendered page content
+print(driver.page_source[:500])
+
+driver.quit()</code></pre>
+
+    <h2>Identifying API Endpoints With Developer Tools</h2>
+    <p>Many websites fetch their data from backend APIs via asynchronous requests. Detecting and using these APIs directly can allow you to avoid browser automation altogether.</p>
+
+    <h3>Step-by-Step Process</h3>
+    <ol>
+      <li>Open browser developer tools (typically <kbd>F12</kbd> or <kbd>Ctrl+Shift+I</kbd>).</li>
+      <li>Navigate to the <strong>Network</strong> tab and reload the page.</li>
+      <li>Filter for <strong>XHR</strong> or <strong>Fetch</strong> requests.</li>
+      <li>Inspect requests returning JSON or structured data.</li>
+      <li>Recreate these API calls using <code>requests</code> in Python.</li>
+    </ol>
+
+    <h3>Example: Accessing an API Directly</h3>
+    <pre><code>import requests
+
+api_url = "https://example.com/api/data"
+headers = {"Authorization": "Bearer YOUR_API_TOKEN"}
+response = requests.get(api_url, headers=headers)
+if response.ok:
+    print(response.json())
+else:
+    print("API request failed")</code></pre>
+
+    <h2>Comparison Table</h2>
+    <table>
+      <thead>
+        <tr>
+          <th>Feature</th>
+          <th>Python requests</th>
+          <th>Selenium / Playwright</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>Handles JavaScript</td>
+          <td>No</td>
+          <td>Yes</td>
+        </tr>
+        <tr>
+          <td>Performance</td>
+          <td>High</td>
+          <td>Low</td>
+        </tr>
+        <tr>
+          <td>Resource Usage</td>
+          <td>Low</td>
+          <td>High</td>
+        </tr>
+        <tr>
+          <td>Deployment Complexity</td>
+          <td>Minimal</td>
+          <td>Moderate</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <h2>Conclusion</h2>
+    <p>For most static websites and API-driven applications, Python’s <code>requests</code> library offers a fast, efficient, and easy-to-deploy solution. For sites with dynamic content, browser automation tools such as Selenium or Playwright are essential. By understanding the trade-offs, developers can build more efficient and maintainable web scraping systems.</p>
+  </main>
+
+  <script>
+    document.querySelector('.burger').addEventListener('click', function(){
+      this.classList.toggle('open');
+      document.querySelector('.nav-links').classList.toggle('show');
+    });
+  </script>
+</body>
+</html>
